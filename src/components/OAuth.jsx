@@ -3,14 +3,16 @@ import app from "../firebase/firebase";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { signInFailure, signInSuccess } from "../redux/user/userSlice";
+import { useNavigate } from 'react-router-dom';
 const OAuth = () => {
+const navigate=  useNavigate();
   const dispatch = useDispatch();
   const handleGoogleClick = async () => {
     try {
       const provider = new GoogleAuthProvider();
       const auth = getAuth(app);
       const result = await signInWithPopup(auth, provider);
-      const data = axios.post(
+      const response = await axios.post(
         "/api/auth/google",
         {
           name: result.user.displayName,
@@ -23,7 +25,10 @@ const OAuth = () => {
           },
         }
       );
-      dispatch(signInSuccess(data));
+      console.log(response.data.data.rest);
+      dispatch(signInSuccess(response.data.data.rest));
+      navigate("/")
+
     } catch (error) {
       console.log("couldn't sign in with google " + error);
       dispatch(signInFailure(error));

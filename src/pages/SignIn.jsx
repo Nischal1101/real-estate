@@ -39,7 +39,7 @@ const SignIn = () => {
         // setError(response.data.message);
         return;
       }
-      dispatch(signInSuccess(response.data.data));
+      dispatch(signInSuccess(response.data.data.rest));
       // setLoading(false);
       // setError(null);
       navigate("/");
