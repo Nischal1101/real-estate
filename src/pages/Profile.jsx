@@ -12,6 +12,8 @@ import {
   updateUserFailure,
   updateUserSuccess,
   updateUserStart,
+  deleteUserFailure,
+  deleteUserSuccess,
 } from "../redux/user/userSlice";
 
 const Profile = () => {
@@ -24,7 +26,20 @@ const Profile = () => {
 
   const fileRef = useRef(null);
   const dispatch = useDispatch();
-
+  const handleDeleteUser = async () => {
+    try {
+      const response = await axios.delete(
+        `/api/user/delete/${currentUser._id}`
+      );
+      if (response.data.status === "error") {
+        dispatch(deleteUserFailure(response.data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(response.data.data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
   const handleFileUpload = (file) => {
     const storage = getStorage(app);
     const fileName = new Date().getTime() + file.name;
@@ -143,7 +158,12 @@ const Profile = () => {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer">Delete Account</span>
+        <span
+          onClick={handleDeleteUser}
+          className="text-red-700 cursor-pointer"
+        >
+          Delete Account
+        </span>
         <span className="text-red-700 cursor-pointer">Sign Out</span>
       </div>
       <p className="text-red-700 mt-5">{error ? error : ""}</p>

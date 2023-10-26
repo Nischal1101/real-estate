@@ -26,7 +26,7 @@ const SignIn = () => {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     dispatch(signInStart());
-    // setLoading(true);
+
     try {
       const response = await axios.post("/api/auth/signin", formData, {
         validateStatus: function (status) {
@@ -35,18 +35,13 @@ const SignIn = () => {
       });
       if (response.data.status === "error") {
         dispatch(signInFailure(response.data.message));
-        // setLoading(false);
-        // setError(response.data.message);
+
         return;
       }
       dispatch(signInSuccess(response.data.data.rest));
-      // setLoading(false);
-      // setError(null);
+
       navigate("/");
     } catch (error) {
-      console.log(error);
-      // setLoading(false);
-      // setError(error.message);
       dispatch(signInFailure(error.message));
     }
   };
@@ -83,7 +78,7 @@ const SignIn = () => {
           <span className="text-blue-700">Sign up</span>
         </Link>
       </div>
-      {error && <p className="text-red-500 mt-5">{error.message}</p>}
+      {error && <p className="text-red-500 mt-5">{error.message || error}</p>}
     </div>
   );
 };

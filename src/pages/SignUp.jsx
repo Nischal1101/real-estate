@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  signInFailure,
+  signUpFailure,
   signInStart,
-  signInSuccess,
+  signUpSuccess,
 } from "../redux/user/userSlice";
 
 const SignUp = () => {
@@ -32,20 +32,13 @@ const SignUp = () => {
           return status < 500;
         },
       });
-      if (response.data.status === "error") {
-        dispatch(signInFailure(response.data.message));
-        // setLoading(false);
-        // setError(response.data.message);
-        return;
+      if (response.data.status === "success") {
+        dispatch(signUpSuccess());
+        navigate("/sign-in");
       }
-      dispatch(signInSuccess(response.data.data));
-      // setLoading(false);
-      // setError(null);
-      navigate("/sign-in");
+      dispatch(signUpFailure(response.data.message));
     } catch (error) {
-      dispatch(signInFailure(error));
-      // setLoading(false);
-      // setError(error.message);
+      dispatch(signUpFailure(error));
     }
   };
   return (
@@ -87,7 +80,7 @@ const SignUp = () => {
           <span className="text-blue-700">Sign in</span>
         </Link>
       </div>
-      {error && <p className="text-red-500 mt-5">{error.message}</p>}
+      {error && <p className="text-red-500 mt-5">{error.message || error}</p>}
     </div>
   );
 };
