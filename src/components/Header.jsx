@@ -27,7 +27,7 @@ const Header = () => {
           <Link to="/about">
             <li className=" text-slate-700 hover:underline">About</li>
           </Link>
-          <Link to="/sign-in">
+          <Link to="/profile">
             {currentUser ? (
               <img
                 className="h-7 w-7 rounded-full object-cover"
