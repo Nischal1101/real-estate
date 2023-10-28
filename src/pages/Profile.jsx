@@ -14,7 +14,12 @@ import {
   updateUserStart,
   deleteUserFailure,
   deleteUserSuccess,
+  deleteUserStart,
+  signOutUserFailure,
+  signOutUserStart,
+  signOutUserSuccess,
 } from "../redux/user/userSlice";
+import { signout } from "../../../server/src/controllers/auth.controller";
 
 const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -26,8 +31,23 @@ const Profile = () => {
 
   const fileRef = useRef(null);
   const dispatch = useDispatch();
+  const handleSignout = async () => {
+    try {
+      dispatch(signOutUserStart());
+      const response = await axios.get("/api/auth/signout");
+
+      if (response.data.stataus === "success") {
+        dispatch(signOutUserSuccess());
+      } else {
+        dispatch(signOutUserFailure(response.data.message));
+      }
+    } catch (error) {
+      dispatch(signOutUserFailure(error.message));
+    }
+  };
   const handleDeleteUser = async () => {
     try {
+      dispatch(deleteUserStart());
       const response = await axios.delete(
         `/api/user/delete/${currentUser._id}`
       );
@@ -164,7 +184,9 @@ const Profile = () => {
         >
           Delete Account
         </span>
-        <span className="text-red-700 cursor-pointer">Sign Out</span>
+        <span onClick={handleSignout} className="text-red-700 cursor-pointer">
+          Sign Out
+        </span>
       </div>
       <p className="text-red-700 mt-5">{error ? error : ""}</p>
       <p className="text-green-700 mt-5">
